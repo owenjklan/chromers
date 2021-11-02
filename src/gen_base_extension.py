@@ -8,6 +8,14 @@ import click
 from click import secho
 
 
+# (<Template source file path>, <Human-description>, <output filename>)
+TEMPLATES_LIST = [
+    ("templates/manifest.json.j2", "JSON Manifest", "manifest.json"),
+    ("templates/popup.html.j2", "Main popup HTML", "popup.html"),
+    ("templates/popup.js.j2", "Main popup Javascript", "popup.js"),
+]
+
+
 def fail_if_missing_args(name, description, version):
     """
     If any of the supplied arguments are None, then a suitable error message
@@ -79,16 +87,22 @@ def main(plugin_name, plugin_description, plugin_version, output_dir,
         "version": plugin_version,
     }
 
-    # Load template
-    manifest_template = Template(
-        open('templates/manifest.json.j2', 'r').read().strip(),
-    )
-    manifest_output = manifest_template.render(
-        permissions_list=permissions_list,
-        plugin=plugin_manifest_details
-    )
-    with open(f"{os.path.join(output_dir, 'manifest.json')}", "w") as output_file:
-        output_file.write(manifest_output)
+    # Load templates
+    for current_template in TEMPLATES_LIST:
+        loaded_template = Template(
+            open(current_template[0], 'r').read().strip(),
+        )
+        current_output = loaded_template.render(
+            permissions_list=permissions_list,
+            plugin=plugin_manifest_details
+        )
+
+        output_path = os.path.join(output_dir, current_template[2])
+        secho(f"Path: {output_path}")
+        with open(output_path, "w") as output_file:
+            output_file.write(current_output)
+            secho(f"Wrote {len(current_output)} bytes to {output_file.name}.",
+                  fg="green")
 
 
 if __name__ == "__main__":
