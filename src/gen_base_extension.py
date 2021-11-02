@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 import os
 
 from jinja2 import Template
@@ -49,11 +50,17 @@ def fail_if_missing_args(name, description, version):
               type=str, metavar="VERSION",
               default=None, show_default=False,
               help=("Specify the initial version string for the new plugin."))
-@click.option("--output-dir", "-o", "output_directory",
+@click.option("--output-dir", "-o", "output_dir",
               type=str, metavar="OUTPUT_DIR",
               default=".", show_default=True,
               help=("Specify the base directory to write generated files to."))
-def main(plugin_name, plugin_description, plugin_version, output_dir):
+@click.option("--add-permission", "-p", "permissions_list",
+              type=str, metavar="PERMISSION_NAME",
+              default=[], show_default=False,
+              help=("Specify the list of permissions this extension will "
+                    "require."))
+def main(plugin_name, plugin_description, plugin_version, output_dir,
+         permissions_list):
     """
     Generate the basic files and directory structure for creating a minimal-
     functionality but mostly-complete Chrome extension that can be loaded
@@ -76,7 +83,10 @@ def main(plugin_name, plugin_description, plugin_version, output_dir):
     manifest_template = Template(
         open('templates/manifest.json.j2', 'r').read().strip(),
     )
-    manifest_output = manifest_template.render(plugin=plugin_manifest_details)
+    manifest_output = manifest_template.render(
+        permissions_list=permissions_list,
+        plugin=plugin_manifest_details
+    )
     with open(f"{os.path.join(output_dir, 'manifest.json')}", "w") as output_file:
         output_file.write(manifest_output)
 
