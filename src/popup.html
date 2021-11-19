@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Browser Extension Experiments</title>
+    <script src="popup.js"></script>
+    <style>
+      body {
+        min-width: 250px;
+      }
+
+      button {
+        border-style: groove;
+        border-radius: 3px;
+        width:  100%;
+        margin: auto auto;
+        color:  #ffffff;
+        background-color: #2bb159;
+      }
+
+      button:hover {
+        background-color: #0a8143;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="standard-header">Browser Experiments</h1>
+    <button id="askToConfirm" class="action-button">Ask for Confirmation</button>
+    <button id="messWithStyle" class="action-button">Mess With Page Style</button>
+    <button id="downloadScriptsCSV">Download Page Scripts CSV</button>
+  </body>
+</html>

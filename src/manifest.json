@@ -1,0 +1,32 @@
+{
+    "manifest_version": 2,
+
+    "name": "Generator Test",
+    "description": "This is a simple test of the basic extension generator script and templates.",
+    "version": "0.0.1",
+
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*/*"
+            ],
+            "run_at": "document_end",
+            "js": ["content.js"]
+        }
+    ],
+
+    "background": {
+        "scripts": ["background.js"]
+    },
+
+    "permissions": [
+        "activeTab",
+        "tabs"
+    ],
+
+    "browser_action": {
+        "default_title": "Browser extension experiments",
+        "default_icon": "images/test-tubes-48.png",
+        "default_popup": "popup.html"
+    }
+}
