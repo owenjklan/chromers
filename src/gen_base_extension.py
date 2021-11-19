@@ -10,9 +10,9 @@ from click import secho
 
 # (<Template source file path>, <Human-description>, <output filename>)
 TEMPLATES_LIST = [
-    ("templates/manifest.json.j2", "JSON Manifest", "manifest.json"),
-    ("templates/popup.html.j2", "Main popup HTML", "popup.html"),
-    ("templates/popup.js.j2", "Main popup Javascript", "popup.js"),
+    ("template_sets/manifest.json.j2", "JSON Manifest", "manifest.json"),
+    ("template_sets/popup.html.j2", "Main popup HTML", "popup.html"),
+    ("template_sets/popup.js.j2", "Main popup Javascript", "popup.js"),
 ]
 
 
