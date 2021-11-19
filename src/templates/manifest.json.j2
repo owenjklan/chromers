@@ -1,15 +1,32 @@
 {
     "manifest_version": 2,
 
-	"name": "{{ plugin.name }}",
-	"description": "{{ plugin.description }}",
-	"version": "{{ plugin.version }}",
+    "name": "{% plugin.name %}",
+    "description": "{% plugin.description %}",
+    "version": "{% plugin.version %}",
 
-	"browser_action": {
-		"default_icon": "icon.png",
-		"default_popup": "popup.html"
-	},
-	"permissions": [
-		"activeTab"
-	]
+    "content_scripts": [
+        {
+            "matches": [
+                {{ match_patterns | join('\n') }}
+            ],
+            "run_at": "document_end",
+            "js": ["content.js"]
+        }
+    ],
+
+    "background": {
+        "scripts": ["background.js"]
+    },
+
+    "permissions": [
+        "activeTab",
+        "tabs"
+    ],
+
+    "browser_action": {
+        "default_title": "{% browser_action.title %}",
+        "default_icon": "{% browser_action.icon %}",
+        "default_popup": "popup.html"
+    }
 }

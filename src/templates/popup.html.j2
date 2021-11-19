@@ -1,15 +1,31 @@
 <!doctype html>
 <html>
   <head>
-    <title>{{plugin.name}}</title>
+    <title>{% plugin.name %}</title>
     <script src="popup.js"></script>
+    <style>
+      body {
+        min-width: 250px;
+      }
+
+      button {
+        border-style: groove;
+        border-radius: 3px;
+        width:  100%;
+        margin: auto auto;
+        margin-top: 3px;
+        margin-bottom: 3px;
+        color:  #ffffff;
+        background-color: #2bb159;
+      }
+
+      button:hover {
+        background-color: #0a8143;
+      }
+    </style>
   </head>
   <body>
-    <h1>{{plugin.name}}</h1>
-    <p>
-        Your custom content and such, goes here.
-    </p>
-
-    <button id="actionButton">Arbitrary Action Button!</button>
+    <h1 class="standard-header">{% plugin.name %}</h1>
+    <button id="{% button.html_id %}" class="action-button">{% button.text %}</button>
   </body>
 </html>

@@ -1,20 +1,34 @@
+{% for button in menu_buttons %}
+function {% button.name %}ButtonClicked() {
+    let message = {
+        "code": "{% button.code %}",
+    }
+    sendMessageToActiveTab(message);
+}
+{% endfor %}
+
+
+// Once DOM finishes loading, start running our JS
 document.addEventListener('DOMContentLoaded', function() {
-  var actionButton = document.getElementById('actionButton');
-  actionButton.addEventListener('click', function() {
+	{% for button in menu_buttons %}
+    const {% button.name %}Button = document.getElementById('{% button.html_id %}');
+	{% endfor %}
 
-    chrome.tabs.getSelected(null, function(tab) {
-      d = document;
 
-      var f = d.createElement('form');
-      f.action = 'https://enexapqr82jwn.x.pipedream.net/';
-      f.method = 'post';
-      var i = d.createElement('input');
-      i.type = 'hidden';
-      i.name = 'url';
-      i.value = tab.url;
-      f.appendChild(i);
-      d.body.appendChild(f);
-      f.submit();
-    });
-  }, false);
+	{% for button in menu_buttons %}
+    {% button.name %}Button.addEventListener('click', {% button.name %}ButtonClicked, false);
+	{% endfor %}
 }, false);
+
+function sendMessageToActiveTab(message) {
+    let query = {active: true, currentWindow: true};
+
+    chrome.tabs.query(query, function (tabs) {
+        console.log("Sending message... " + message.code);
+        let targetTab = tabs[0].id;
+        console.log("Target tab ID: " + targetTab);
+        console.log("      Tab URL: " + tabs[0].url);
+
+        chrome.tabs.sendMessage(tabs[0].id, {"code": "ADD_RULE_TO_CSV"});
+    });
+}
