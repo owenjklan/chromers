@@ -4,41 +4,27 @@ import textwrap
 
 import yaml
 import sys
+import textwrap
 
 from jinja2 import Template
 
 from dialog import Dialog
 
-
-def get_template_set_directories(base_dir):
-    """
-    Get only directories that are present under provided base directory
-    """
-    all_files = os.listdir(base_dir)
-
-    # Filterout non-directories
-    sub_directory_names = []
-    for filename in all_files:
-        abs_filename = os.path.join(base_dir, filename)
-        if os.path.isdir(abs_filename):
-            sub_directory_names.append(abs_filename)
-    return sub_directory_names
+from helpers import load_template_sets_yamls
 
 
-def load_template_sets_yamls(base_dir):
-    template_sub_dirs = get_template_set_directories(base_dir)
+def acknowledge_errors_or_exit(dlg, error_list):
+    wrapped_messages = []
+    summary_text = ""
+    for error_msg in error_list:
+        wrapped_lines = textwrap.wrap(error_msg, 50, subsequent_indent=2)
+        wrapped_message = "\n".join(wrapped_lines)
+        wrapped_messages.append(wrapped_message)
 
-    # Ensure we have a valid 'config.yaml' in each found directory. Also do
-    # some basic validations on what's found in the YAML and file structure.
-    valid_template_sets = []
-
-    for template_dir in template_sub_dirs:
-        config_path = os.path.join(template_dir, "config.yaml")
-        with open(config_path, "r") as config_yaml_file:
-            config_object = yaml.load(config_yaml_file, yaml.Loader)
-            valid_template_sets.append((template_dir, config_object))
-
-    return valid_template_sets
+    summary_text += wrapped_message + "\n"
+    dlg.scrollbox(summary_text, height=20, width=64,
+                  title="Errors from Template sets Load operation.",
+                  backtitle="Chromers")
 
 
 def select_template_set_from_menu(dlg, template_sets_info_list):
@@ -71,7 +57,10 @@ def main():
 
     templates_dir = os.path.abspath(os.path.join(os.getcwd(), TEMPLATE_SETS_DIR))
 
-    template_sets_info = load_template_sets_yamls(templates_dir)
+    template_sets_info, template_errors_list = load_template_sets_yamls(templates_dir)
+
+    if len(template_errors_list) > 0:
+        acknowledge_errors_or_exit(d, template_errors_list)
 
     selected_template = select_template_set_from_menu(d, template_sets_info)
 

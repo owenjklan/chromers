@@ -1,31 +1,44 @@
+import os
 import yaml
 
 
-def client_select_menu(dlg, menu_choices):
-    selected_clients = dlg.checklist(
-        ("Select API Clients to add to the generated script."),
-        choices=menu_choices,
-        title=" Select included clients ",
-        width=70,
-        backtitle="Click Cookie-Cutter",
-    )
-    return selected_clients
+def get_template_set_directories(base_dir):
+    """
+    Get only directories that are present under provided base directory
+    """
+    all_files = os.listdir(base_dir)
+
+    # Filterout non-directories
+    sub_directory_names = []
+    for filename in all_files:
+        abs_filename = os.path.join(base_dir, filename)
+        if os.path.isdir(abs_filename):
+            sub_directory_names.append(abs_filename)
+    return sub_directory_names
 
 
-def load_client_spec_yamls():
-    client_choices_menu = []
-    base_dir = "client_specs"
-    files = os.listdir(base_dir)
-    yaml_files = [f for f in files if f.endswith(".yml") or f.endswith(".yaml")]
+def load_template_sets_yamls(base_dir):
+    template_sub_dirs = get_template_set_directories(base_dir)
 
-    for yaml_file in yaml_files:
-        yaml_path = os.path.join(base_dir, yaml_file)
-        with open(yaml_path, "r") as yaml_file_obj:
-            info = yaml.load(yaml_file_obj, Loader=yaml.Loader)
-            client_specs[info['short_name']] = info
+    # Ensure we have a valid 'config.yaml' in each found directory. Also do
+    # some basic validations on what's found in the YAML and file structure.
+    valid_template_sets = []
+    template_errors = []
 
-        client_choices_menu.append(
-            (info['short_name'], info['description'], False, )
-        )
+    for template_dir in template_sub_dirs:
+        config_path = os.path.join(template_dir, "config.yaml")
+        try:
+            with open(config_path, "r") as config_yaml_file:
+                config_object = yaml.load(config_yaml_file, yaml.Loader)
+                valid_template_sets.append((template_dir, config_object))
+        except FileNotFoundError as fnfe:
+            error_msg = "config.yaml file missing from '{}'".format(
+                os.path.basename(template_dir)
+            )
+            template_errors.append(error_msg)
 
-    return client_choices_menu
+    # display errors?
+    for err_num, err in enumerate(template_errors):
+        print(f"#{err_num + 1}: {err}")
+
+    return valid_template_sets, template_errors
