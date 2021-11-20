@@ -1,3 +1,4 @@
 name: "Simple Browser Action Menu"
 short_name: "simple_menu"
 description: "Create an extension with a simple popup menu, triggered by a Browser Action"
+short_description: "Simple popup-menu with buttons"
