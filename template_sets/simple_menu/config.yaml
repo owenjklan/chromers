@@ -1,0 +1,37 @@
+name: "Simple Browser Action Menu"
+short_name: "simple_menu"
+description: "Create an extension with a simple popup menu, triggered by a Browser Action"
+
+
+
+name: "LogicMonitor"
+short_name: "logicmonitor"
+description: "Add LogicMonitor REST API client options"
+instance_template:
+  format: "{lm_instance_id}.logicmonitor.com"
+  varname: "LM_INSTANCE_HOST"
+  format_var: "lm_instance_id"
+  comment: "LogicMonitor hostname template"
+options:
+  - varname: "lm_instance_id"
+    long: "--lm-instance-id"
+    type: str
+    envvar: "_LM_INSTANCE"
+    metavar: "INSTANCE"
+    help: "Specify the LogicMonitor instance to operate with. Eg: 'equate'"
+  - varname: "lm_access_id"
+    long: "--lm-access-id"
+    type: str
+    envvar: "_LM_ACCESS_ID"
+    metavar: "ACCESS_ID"
+    help: "Specify AccessID to use with LogicMonitor REST APIs."
+  - varname: "lm_access_key"
+    long: "--lm-access-key"
+    type: str
+    envvar: "_LM_ACCESS_KEY"
+    metavar: "ACCESS_KEY"
+    help: "Specify Access Key for associated AccessID."
+imports:
+  - description: "REST API v2"
+    import_name: "logicmonitor_sdk"
+    install_name: "logicmonitor-sdk"
